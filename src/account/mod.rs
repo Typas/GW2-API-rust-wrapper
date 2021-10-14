@@ -26,8 +26,8 @@ pub mod wallet;
 pub mod worldbosses;
 
 use super::{ApiResult, SchemaVersion};
-use crate::api::{NotAuthenticatedError};
-use crate::util::request_common_build;
+use crate::api::NotAuthenticatedError;
+use crate::util::{request_common_build, to_builder};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
@@ -176,11 +176,29 @@ impl AccountBuilder {
         Ok(data)
     }
 
-    pub fn achievements(&self) -> achievements::AchievementsBuilder {
-        achievements::AchievementsBuilder {
-            client: self.client.clone(),
-            key: self.key.clone(),
-            version: self.version.clone(),
-        }
-    }
+    to_builder!(home, AccountHomeBuilder);
+    to_builder!(mastery, AccountMasteryBuilder);
+    to_builder!(mounts, AccountMountsBuilder);
+    to_builder!(pvp, AccountPvpBuilder);
+    to_builder!(achievements, AccountAchievementsBuilder);
+    to_builder!(bank, AccountBankBuilder);
+    to_builder!(dailycrafting, AccountDailyCraftingBuilder);
+    to_builder!(dungeons, AccountDungeonsBuilder);
+    to_builder!(dyes, AccountDyesBuilder);
+    to_builder!(finishers, AccountFinishersBuilder);
+    to_builder!(gliders, AccountGlidersBuilder);
+    to_builder!(inventory, AccountInventoryBuilder);
+    to_builder!(luck, AccountLuckBuilder);
+    to_builder!(mailcarriers, AccountMailCarriersBuilder);
+    to_builder!(mapchests, AccountMapChestsBuilder);
+    to_builder!(masteries, AccountMasteriesBuilder);
+    to_builder!(minis, AccountMinisBuilder);
+    to_builder!(novelties, AccountNoveltiesBuilder);
+    to_builder!(outfits, AccountOutfitsBuilder);
+    to_builder!(raids, AccountRaidsBuilder);
+    to_builder!(recipes, AccountRecipesBuilder);
+    to_builder!(skins, AccountSkinsBuilder);
+    to_builder!(titles, AccountTitlesBuilder);
+    to_builder!(wallet, AccountWalletBuilder);
+    to_builder!(worldbosses, AccountWorldBossesBuilder);
 }

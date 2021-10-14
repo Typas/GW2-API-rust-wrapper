@@ -25,3 +25,17 @@ fn schema_version(version: &SchemaVersion) -> Option<String> {
         SchemaVersion::Latest => Some(String::from("latest")),
     }
 }
+
+macro_rules! to_builder {
+    ( $path:ident, $struct:ident ) => {
+        pub fn $path(self) -> $path::$struct{
+            $path::$struct{
+                client: self.client,
+                key: self.key,
+                version: self.version,
+            }
+        }
+    };
+}
+
+pub(crate) use to_builder;

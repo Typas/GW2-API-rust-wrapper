@@ -6,11 +6,11 @@ use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
 #[derive(Deserialize, Serialize)]
-pub struct AchievementsData {
+pub struct AccountAchievementsData {
     achievements: Vec<SingleAchievement>,
 }
 
-impl AchievementsData {
+impl AccountAchievementsData {
     pub fn new(json: serde_json::Value) -> ApiResult<Self> {
         let data: Self = serde_json::from_value(json)?;
 
@@ -78,14 +78,14 @@ impl SingleAchievement {
     }
 }
 
-pub struct AchievementsBuilder {
+pub struct AccountAchievementsBuilder {
     pub client: Client,
     pub key: Arc<Option<String>>,
     pub version: Arc<SchemaVersion>,
 }
 
-impl AchievementsBuilder {
-    pub async fn build(self) -> ApiResult<AchievementsData> {
+impl AccountAchievementsBuilder {
+    pub async fn build(self) -> ApiResult<AccountAchievementsData> {
         if let None = Option::as_ref(&self.key) {
             return Err(Box::new(NotAuthenticatedError));
         }
@@ -96,6 +96,6 @@ impl AchievementsBuilder {
 
         // XXX: inconsistency of store into data
         let data: Vec<SingleAchievement> = req.send().await?.json().await?;
-        Ok(AchievementsData { achievements: data })
+        Ok(AccountAchievementsData { achievements: data })
     }
 }

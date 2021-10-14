@@ -17,7 +17,10 @@ mod util;
 
 // re-export
 pub use account::AccountData;
-pub use account::achievements::AchievementsData as AccountAchievementsData;
+pub use account::achievements::AccountAchievementsData;
+pub use account::bank::AccountBankData;
+pub use account::dailycrafting::AccountDailyCraftingData;
+pub use account::dungeons::AccountDungeonsData;
 pub use api::SchemaVersion;
 pub use api::ApiClient;
 
