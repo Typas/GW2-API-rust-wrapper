@@ -26,16 +26,68 @@ fn schema_version(version: &SchemaVersion) -> Option<String> {
     }
 }
 
-macro_rules! to_builder {
-    ( $path:ident, $struct:ident ) => {
-        pub fn $path(self) -> $path::$struct{
-            $path::$struct{
-                client: self.client,
-                key: self.key,
-                version: self.version,
+macro_rules! into_builder {
+    ( $fn_name:ident, $struct:ident ) => {
+        pub fn $fn_name(self) -> $fn_name::$struct {
+            $fn_name::$struct::new(self.client, self.key, self.version)
+        }
+    };
+
+    ( $fn_name:ident, $struct:ident, Self) => {
+        pub fn $fn_name(self) -> $struct {
+            $struct::new(self.client, self.key, self.version)
+        }
+    };
+
+    ( $fn_name:ident, $struct:ident $(, $field:ident : $type:ty )+ ) => {
+        pub fn $fn_name(self $(, $field: $type)+ ) -> $struct {
+            $struct::new(self.client, self.key, self.version $(,$field)+)
+        }
+    }
+}
+
+macro_rules! new_builder_from_params {
+    () => {
+        pub(super) fn new(
+            client: Client,
+            key: Arc<Option<String>>,
+            version: Arc<SchemaVersion>
+        ) -> Self {
+            Self {
+                client,
+                key,
+                version,
+            }
+        }
+    };
+
+    ($($field:tt : $type:ty)+ $(,)? ) => {
+        pub(super) fn new(
+            client: Client,
+            key: Arc<Option<String>>,
+            version: Arc<SchemaVersion>
+                $(, $field: $type)+)
+            -> Self {
+            Self {
+                client,
+                key,
+                version,
+                $($field,)+
+            }
+        }
+    }
+}
+
+macro_rules! trait_from_jsvalue {
+    ( $struct:ident ) => {
+        impl std::convert::From<serde_json::Value> for $struct {
+            fn from(val: serde_json::Value) -> Self {
+                serde_json::from_value(val).unwrap()
             }
         }
     };
 }
 
-pub(crate) use to_builder;
+pub(crate) use into_builder;
+pub(crate) use new_builder_from_params;
+pub(crate) use trait_from_jsvalue;

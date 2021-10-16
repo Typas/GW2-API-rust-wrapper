@@ -1,19 +1,20 @@
 pub mod skins;
 pub mod types;
 
+use crate::util::*;
 use crate::SchemaVersion;
 use reqwest::Client;
 use std::sync::Arc;
-use crate::util::to_builder;
 
 #[derive(Clone)]
 pub struct AccountMountsBuilder {
-    pub client: Client,
-    pub key: Arc<Option<String>>,
-    pub version: Arc<SchemaVersion>,
+    client: Client,
+    key: Arc<Option<String>>,
+    version: Arc<SchemaVersion>,
 }
 
 impl AccountMountsBuilder {
-    to_builder!(skins, AccountSkinsBuilder);
-    to_builder!(types, AccountTypesBuilder);
+    new_builder_from_params!();
+    into_builder!(skins, AccountSkinsBuilder);
+    into_builder!(types, AccountTypesBuilder);
 }

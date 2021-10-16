@@ -1,28 +1,36 @@
 // modules
+#[allow(dead_code, unused_imports)]
 pub mod account;
-pub mod api;
+#[allow(dead_code, unused_imports)]
 pub mod achievements;
+#[allow(dead_code, unused_imports)]
+pub mod api;
+#[allow(dead_code, unused_imports)]
 pub mod backstory;
+#[allow(dead_code, unused_imports)]
 pub mod commerce;
+#[allow(dead_code, unused_imports)]
 pub mod guild;
+#[allow(dead_code, unused_imports)]
 pub mod home;
+#[allow(dead_code, unused_imports)]
 pub mod mounts;
+#[allow(dead_code, unused_imports)]
 pub mod pvp;
+#[allow(dead_code, unused_imports)]
 pub mod recipes;
+#[allow(dead_code, unused_imports)]
 pub mod stories;
-pub mod wvw;
-pub mod utility;
+#[allow(dead_code, unused_imports)]
 mod util;
-
+#[allow(dead_code, unused_imports)]
+pub mod utility;
+#[allow(dead_code, unused_imports)]
+pub mod wvw;
 
 // re-export
-pub use account::AccountData;
-pub use account::achievements::AccountAchievementsData;
-pub use account::bank::AccountBankData;
-pub use account::dailycrafting::AccountDailyCraftingData;
-pub use account::dungeons::AccountDungeonsData;
-pub use api::SchemaVersion;
 pub use api::ApiClient;
+pub use api::SchemaVersion;
 
 // type redefinition
 type ApiResult<T> = Result<T, Box<dyn std::error::Error>>;

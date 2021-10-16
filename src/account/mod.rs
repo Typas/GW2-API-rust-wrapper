@@ -25,9 +25,9 @@ pub mod titles;
 pub mod wallet;
 pub mod worldbosses;
 
-use super::{ApiResult, SchemaVersion};
 use crate::api::NotAuthenticatedError;
-use crate::util::{request_common_build, to_builder};
+use crate::util::*;
+use crate::{ApiResult, SchemaVersion};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
@@ -51,26 +51,10 @@ pub struct AccountData {
 }
 
 impl AccountData {
-    pub fn new(json: serde_json::Value) -> ApiResult<Self> {
-        let data: Self = serde_json::from_value(json)?;
-
-        Ok(data)
-    }
-
     /// The unique persistent account GUID.
     pub fn id(&self) -> &str {
         self.id.as_str()
     }
-
-    // /// The age of the account,
-    // pub fn age(&self) -> String {
-    //     let days = self.age / 86400;
-    //     let hours = self.age % 86400 / 3600;
-    //     let minutes = self.age % 3600 / 60;
-    //     let seconds = self.age % 60;
-
-    //     format!("{} d {} h {} m {} s", days, hours, minutes, seconds).to_string()
-    // }
 
     /// The age of the account in seconds.
     pub fn age(&self) -> u32 {
@@ -155,12 +139,14 @@ impl AccountData {
 
 #[derive(Clone)]
 pub struct AccountBuilder {
-    pub client: Client,
-    pub key: Arc<Option<String>>,
-    pub version: Arc<SchemaVersion>,
+    client: Client,
+    key: Arc<Option<String>>,
+    version: Arc<SchemaVersion>,
 }
 
 impl AccountBuilder {
+    new_builder_from_params!();
+
     /// Get account data from api.guildwars2.com .
     /// Returns `NotAuthenticatedError` when trying to access without api key
     pub async fn build(self) -> ApiResult<AccountData> {
@@ -176,29 +162,57 @@ impl AccountBuilder {
         Ok(data)
     }
 
-    to_builder!(home, AccountHomeBuilder);
-    to_builder!(mastery, AccountMasteryBuilder);
-    to_builder!(mounts, AccountMountsBuilder);
-    to_builder!(pvp, AccountPvpBuilder);
-    to_builder!(achievements, AccountAchievementsBuilder);
-    to_builder!(bank, AccountBankBuilder);
-    to_builder!(dailycrafting, AccountDailyCraftingBuilder);
-    to_builder!(dungeons, AccountDungeonsBuilder);
-    to_builder!(dyes, AccountDyesBuilder);
-    to_builder!(finishers, AccountFinishersBuilder);
-    to_builder!(gliders, AccountGlidersBuilder);
-    to_builder!(inventory, AccountInventoryBuilder);
-    to_builder!(luck, AccountLuckBuilder);
-    to_builder!(mailcarriers, AccountMailCarriersBuilder);
-    to_builder!(mapchests, AccountMapChestsBuilder);
-    to_builder!(masteries, AccountMasteriesBuilder);
-    to_builder!(minis, AccountMinisBuilder);
-    to_builder!(novelties, AccountNoveltiesBuilder);
-    to_builder!(outfits, AccountOutfitsBuilder);
-    to_builder!(raids, AccountRaidsBuilder);
-    to_builder!(recipes, AccountRecipesBuilder);
-    to_builder!(skins, AccountSkinsBuilder);
-    to_builder!(titles, AccountTitlesBuilder);
-    to_builder!(wallet, AccountWalletBuilder);
-    to_builder!(worldbosses, AccountWorldBossesBuilder);
+    into_builder!(home, AccountHomeBuilder);
+    into_builder!(mastery, AccountMasteryBuilder);
+    into_builder!(mounts, AccountMountsBuilder);
+    into_builder!(pvp, AccountPvpBuilder);
+    into_builder!(achievements, AccountAchievementsBuilder);
+    into_builder!(bank, AccountBankBuilder);
+    into_builder!(dailycrafting, AccountDailyCraftingBuilder);
+    into_builder!(dungeons, AccountDungeonsBuilder);
+    into_builder!(dyes, AccountDyesBuilder);
+    into_builder!(finishers, AccountFinishersBuilder);
+    into_builder!(gliders, AccountGlidersBuilder);
+    into_builder!(inventory, AccountInventoryBuilder);
+    into_builder!(luck, AccountLuckBuilder);
+    into_builder!(mailcarriers, AccountMailCarriersBuilder);
+    into_builder!(mapchests, AccountMapChestsBuilder);
+    into_builder!(masteries, AccountMasteriesBuilder);
+    into_builder!(minis, AccountMinisBuilder);
+    into_builder!(novelties, AccountNoveltiesBuilder);
+    into_builder!(outfits, AccountOutfitsBuilder);
+    into_builder!(raids, AccountRaidsBuilder);
+    into_builder!(recipes, AccountRecipesBuilder);
+    into_builder!(skins, AccountSkinsBuilder);
+    into_builder!(titles, AccountTitlesBuilder);
+    into_builder!(wallet, AccountWalletBuilder);
+    into_builder!(worldbosses, AccountWorldBossesBuilder);
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::ApiClient;
+
+    fn setup() -> ApiClient {
+        ApiClient::new().unwrap()
+    }
+
+    // need environment variable GW2_API_KEY
+    fn setup_auth() -> ApiClient {
+        let key = std::env::var("GW2_API_KEY").unwrap();
+        ApiClient::config().unwrap().key(&key).build()
+    }
+
+    #[tokio::test]
+    #[should_panic]
+    async fn build_no_auth() {
+        let client = setup();
+        let _ = client.account().build().await.unwrap();
+    }
+
+    #[tokio::test]
+    async fn build_with_auth() {
+        let client = setup_auth();
+        let _ = client.account().build().await.unwrap();
+    }
 }

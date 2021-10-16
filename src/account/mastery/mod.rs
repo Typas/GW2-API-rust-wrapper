@@ -1,17 +1,18 @@
 pub mod points;
 
+use crate::util::*;
 use crate::SchemaVersion;
 use reqwest::Client;
 use std::sync::Arc;
-use crate::util::to_builder;
 
 #[derive(Clone)]
 pub struct AccountMasteryBuilder {
-    pub client: Client,
-    pub key: Arc<Option<String>>,
-    pub version: Arc<SchemaVersion>,
+    client: Client,
+    key: Arc<Option<String>>,
+    version: Arc<SchemaVersion>,
 }
 
 impl AccountMasteryBuilder {
-    to_builder!(points, AccountMasteryPointsBuilder);
+    new_builder_from_params!();
+    into_builder!(points, AccountMasteryPointsBuilder);
 }

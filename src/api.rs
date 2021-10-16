@@ -7,14 +7,12 @@ use super::ApiResult;
 use reqwest::{Client, ClientBuilder};
 use serde_json::Value as json_value;
 
-#[allow(dead_code)]
 pub struct ApiClient {
     client: Client,
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
 }
 
-#[allow(dead_code)]
 pub struct ApiClientBuilder {
     client: Client,
     key: Option<String>,
@@ -44,12 +42,38 @@ impl ApiClient {
     }
 
     /// build account request
-    pub fn account(&self) -> super::account::AccountBuilder {
-        super::account::AccountBuilder {
-            client: self.client.clone(),
-            key: self.key.clone(),
-            version: self.version.clone(),
-        }
+    pub fn account(&self) -> crate::account::AccountBuilder {
+        crate::account::AccountBuilder::new(
+            self.client.clone(),
+            self.key.clone(),
+            self.version.clone(),
+        )
+    }
+
+    /// build achievement request
+    pub fn achievements(&self) -> crate::achievements::AchievementsBuilder {
+        crate::achievements::AchievementsBuilder::new(
+            self.client.clone(),
+            self.key.clone(),
+            self.version.clone(),
+        )
+    }
+
+    /// build backstory request
+    pub fn backstory(&self) -> crate::backstory::BackStoryBuilder {
+        crate::backstory::BackStoryBuilder::new(
+            self.client.clone(),
+            self.key.clone(),
+            self.version.clone(),
+        )
+    }
+
+    pub fn commerce(&self) -> crate::commerce::CommerceBuilder {
+        crate::commerce::CommerceBuilder::new(
+            self.client.clone(),
+            self.key.clone(),
+            self.version.clone(),
+        )
     }
 }
 

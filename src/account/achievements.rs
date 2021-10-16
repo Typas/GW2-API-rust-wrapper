@@ -1,6 +1,6 @@
-use super::{ApiResult, SchemaVersion};
 use crate::api::NotAuthenticatedError;
-use crate::util::request_common_build;
+use crate::util::*;
+use crate::{ApiResult, SchemaVersion};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
@@ -12,7 +12,8 @@ pub struct AccountAchievementsData {
 
 impl AccountAchievementsData {
     pub fn new(json: serde_json::Value) -> ApiResult<Self> {
-        let data: Self = serde_json::from_value(json)?;
+        let data: Vec<SingleAchievement> = serde_json::from_value(json)?;
+        let data = Self { achievements: data };
 
         Ok(data)
     }
@@ -78,13 +79,17 @@ impl SingleAchievement {
     }
 }
 
+trait_from_jsvalue!(SingleAchievement);
+
 pub struct AccountAchievementsBuilder {
-    pub client: Client,
-    pub key: Arc<Option<String>>,
-    pub version: Arc<SchemaVersion>,
+    client: Client,
+    key: Arc<Option<String>>,
+    version: Arc<SchemaVersion>,
 }
 
 impl AccountAchievementsBuilder {
+    new_builder_from_params!();
+
     pub async fn build(self) -> ApiResult<AccountAchievementsData> {
         if let None = Option::as_ref(&self.key) {
             return Err(Box::new(NotAuthenticatedError));

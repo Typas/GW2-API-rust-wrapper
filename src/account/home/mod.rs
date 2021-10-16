@@ -1,19 +1,20 @@
 pub mod cats;
 pub mod nodes;
 
+use crate::util::*;
 use crate::SchemaVersion;
 use reqwest::Client;
 use std::sync::Arc;
-use crate::util::to_builder;
 
 #[derive(Clone)]
 pub struct AccountHomeBuilder {
-    pub client: Client,
-    pub key: Arc<Option<String>>,
-    pub version: Arc<SchemaVersion>,
+    client: Client,
+    key: Arc<Option<String>>,
+    version: Arc<SchemaVersion>,
 }
 
 impl AccountHomeBuilder {
-    to_builder!(cats, AccountHomeCatsBuilder);
-    to_builder!(nodes, AccountHomeNodesBuilder);
+    new_builder_from_params!();
+    into_builder!(cats, AccountHomeCatsBuilder);
+    into_builder!(nodes, AccountHomeNodesBuilder);
 }

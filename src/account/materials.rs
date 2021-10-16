@@ -11,9 +11,9 @@ pub struct AccountMaterialsData {}
 impl AccountMaterialsData {}
 
 pub struct AccountMaterialsBuilder {
-    pub client: Client,
-    pub key: Arc<Option<String>>,
-    pub version: Arc<SchemaVersion>,
+    client: Client,
+    key: Arc<Option<String>>,
+    version: Arc<SchemaVersion>,
 }
 
 impl AccountMaterialsBuilder {

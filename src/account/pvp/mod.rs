@@ -1,17 +1,18 @@
 pub mod heroes;
 
+use crate::util::*;
 use crate::SchemaVersion;
 use reqwest::Client;
 use std::sync::Arc;
-use crate::util::to_builder;
 
 #[derive(Clone)]
 pub struct AccountPvpBuilder {
-    pub client: Client,
-    pub key: Arc<Option<String>>,
-    pub version: Arc<SchemaVersion>,
+    client: Client,
+    key: Arc<Option<String>>,
+    version: Arc<SchemaVersion>,
 }
 
 impl AccountPvpBuilder {
-    to_builder!(heroes, AccountPvpHeroesBuilder);
+    new_builder_from_params!();
+    into_builder!(heroes, AccountPvpHeroesBuilder);
 }

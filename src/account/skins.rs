@@ -1,6 +1,6 @@
-use super::{ApiResult, SchemaVersion};
 use crate::api::NotAuthenticatedError;
-use crate::util::request_common_build;
+use crate::util::*;
+use crate::{ApiResult, SchemaVersion};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
@@ -11,12 +11,14 @@ pub struct AccountSkinsData {}
 impl AccountSkinsData {}
 
 pub struct AccountSkinsBuilder {
-    pub client: Client,
-    pub key: Arc<Option<String>>,
-    pub version: Arc<SchemaVersion>,
+    client: Client,
+    key: Arc<Option<String>>,
+    version: Arc<SchemaVersion>,
 }
 
 impl AccountSkinsBuilder {
+    new_builder_from_params!();
+
     pub async fn build(self) -> ApiResult<AccountSkinsData> {
         todo!()
     }
