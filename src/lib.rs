@@ -1,35 +1,56 @@
 // modules
-#[allow(dead_code, unused_imports)]
 pub mod account;
-#[allow(dead_code, unused_imports)]
 pub mod achievements;
-#[allow(dead_code, unused_imports)]
 pub mod api;
-#[allow(dead_code, unused_imports)]
 pub mod backstory;
-#[allow(dead_code, unused_imports)]
+pub mod build;
+pub mod characters;
+pub mod colors;
 pub mod commerce;
-#[allow(dead_code, unused_imports)]
+pub mod continents;
+pub mod createsubtoken;
+pub mod currencies;
+pub mod dailycrafting;
+pub mod dungeons;
+pub mod emblem;
+pub mod files;
+pub mod finishers;
 pub mod guild;
-#[allow(dead_code, unused_imports)]
 pub mod home;
-#[allow(dead_code, unused_imports)]
+pub mod items;
+pub mod itemstats;
+pub mod legends;
+pub mod mapchests;
+pub mod maps;
+pub mod masteries;
+pub mod materials;
+pub mod minis;
 pub mod mounts;
-#[allow(dead_code, unused_imports)]
+pub mod novelties;
+pub mod outfits;
+pub mod pets;
+pub mod professions;
 pub mod pvp;
-#[allow(dead_code, unused_imports)]
+pub mod quaggans;
+pub mod quests;
+pub mod races;
+pub mod raids;
 pub mod recipes;
-#[allow(dead_code, unused_imports)]
+pub mod skills;
+pub mod skins;
+pub mod specializations;
 pub mod stories;
-#[allow(dead_code, unused_imports)]
+pub mod titles;
+pub mod tokeninfo;
+pub mod traits;
 mod util;
-#[allow(dead_code, unused_imports)]
-pub mod utility;
-#[allow(dead_code, unused_imports)]
+pub mod worldbosses;
+pub mod worlds;
 pub mod wvw;
 
 // re-export
 pub use api::ApiClient;
+pub use api::EndPoint;
 pub use api::SchemaVersion;
 
 // type redefinition
@@ -37,8 +58,11 @@ type ApiResult<T> = Result<T, Box<dyn std::error::Error>>;
 
 // enumerations
 pub enum Error {
-    NotAuthenticated(api::NotAuthenticatedError),
+    NotAuthenticated,
 }
+
+// trait for my ease
+pub trait ApiDataType {}
 
 #[cfg(test)]
 mod tests {

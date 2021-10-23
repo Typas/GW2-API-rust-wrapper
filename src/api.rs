@@ -1,21 +1,17 @@
-use std::{fmt, sync::Arc};
-
-use crate::util::request_common_build;
-use chrono::Utc;
-
+use super::ApiDataType;
 use super::ApiResult;
-use reqwest::{Client, ClientBuilder};
-use serde_json::Value as json_value;
 
+#[allow(dead_code)]
 pub struct ApiClient {
-    client: Client,
-    key: Arc<Option<String>>,
-    version: Arc<SchemaVersion>,
+    key: Option<String>,
+    client: reqwest::blocking::Client,
+    version: SchemaVersion,
 }
 
+#[allow(dead_code)]
 pub struct ApiClientBuilder {
-    client: Client,
     key: Option<String>,
+    client: reqwest::blocking::Client,
     version: SchemaVersion,
 }
 
@@ -30,57 +26,52 @@ impl ApiClient {
         ApiClientBuilder::new()
     }
 
-    /// get some data without any limit, need to parse data by yourself
-    pub async fn free_style(&self, param: &str) -> ApiResult<json_value> {
-        let url = String::from("https://api.guildwars2.com/v2/") + param;
+    /// get API date by selecting endpoint
+    /// remember to use right type to get the data, or it would panic
+    pub fn get<T>(&self, endpoint: &EndPoint) -> ApiResult<T>
+    where
+        T: ApiDataType + serde::de::DeserializeOwned,
+    {
+        let url = String::from("https://api.guildwars2.com/v2") + &Self::select_url(endpoint);
+        let ver = Self::schema_version(&self.version);
 
+        // XXX: I want to combine these to one statement
         let req = self.client.get(&url);
-        let req = request_common_build(req, &self.key, &self.version);
+        let req = match &self.key {
+            Some(key) => req.bearer_auth(&key),
+            None => req,
+        };
+        let req = match ver {
+            Some(ver) => req.header("X-schema-Version", ver),
+            None => req,
+        };
 
-        let json: json_value = req.send().await?.json().await?;
-        Ok(json)
+        let data: T = req.send()?.json()?;
+
+        Ok(data)
     }
 
-    /// build account request
-    pub fn account(&self) -> crate::account::AccountBuilder {
-        crate::account::AccountBuilder::new(
-            self.client.clone(),
-            self.key.clone(),
-            self.version.clone(),
-        )
+    fn select_url(endpoint: &EndPoint) -> String {
+        match endpoint {
+            _ => todo!(),
+        }
     }
 
-    /// build achievement request
-    pub fn achievements(&self) -> crate::achievements::AchievementsBuilder {
-        crate::achievements::AchievementsBuilder::new(
-            self.client.clone(),
-            self.key.clone(),
-            self.version.clone(),
-        )
-    }
-
-    /// build backstory request
-    pub fn backstory(&self) -> crate::backstory::BackStoryBuilder {
-        crate::backstory::BackStoryBuilder::new(
-            self.client.clone(),
-            self.key.clone(),
-            self.version.clone(),
-        )
-    }
-
-    pub fn commerce(&self) -> crate::commerce::CommerceBuilder {
-        crate::commerce::CommerceBuilder::new(
-            self.client.clone(),
-            self.key.clone(),
-            self.version.clone(),
-        )
+    fn schema_version(version: &SchemaVersion) -> Option<String> {
+        match version {
+            SchemaVersion::Default => None,
+            SchemaVersion::Time(_t) => todo!(),
+            SchemaVersion::Latest => Some(String::from("latest")),
+        }
     }
 }
 
 impl ApiClientBuilder {
     /// create a default setting
     pub fn new() -> ApiResult<Self> {
-        let client = ClientBuilder::new().https_only(true).build()?;
+        let client = reqwest::blocking::ClientBuilder::new()
+            .https_only(true)
+            .build()?;
 
         let item = ApiClientBuilder {
             key: None,
@@ -113,29 +104,31 @@ impl ApiClientBuilder {
     /// build a api client
     pub fn build(self) -> ApiClient {
         ApiClient {
-            key: Arc::new(self.key),
+            key: self.key,
             client: self.client,
-            version: Arc::new(self.version),
+            version: self.version,
         }
     }
 }
 
+pub enum EndPoint {
+    Account,
+    Achievements,
+    DailyRewards,
+    GameMechanics,
+    Guild,
+    Home,
+    Items,
+    MapInfo,
+    Misc,
+    Story,
+    PvP,
+    TradingPost,
+    WvW,
+}
+
 pub enum SchemaVersion {
     Default,
-    Time(chrono::DateTime<Utc>),
+    Time(chrono::NaiveDateTime),
     Latest,
 }
-
-#[derive(Debug)]
-pub struct NotAuthenticatedError;
-
-impl fmt::Display for NotAuthenticatedError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "Accessing content that need authentication without api key"
-        )
-    }
-}
-
-impl std::error::Error for NotAuthenticatedError {}
