@@ -2,7 +2,7 @@ pub mod tomorrow;
 
 use crate::util::*;
 use crate::{ApiResult, SchemaVersion};
-use chrono::DateTime;
+use chrono::{DateTime, Utc};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use serde_json::Value as JsValue;
@@ -44,6 +44,7 @@ impl AchievementsDailyBuilder {
         let data = match *self.version {
             SchemaVersion::Default => AchievementsDailyData::Pre20190516(tmp.into()),
             SchemaVersion::Time(t) => {
+                let t = DateTime::<Utc>::from_utc(t, Utc);
                 let crit_datetime =
                     DateTime::parse_from_rfc3339("2019-05-16T00:00:00-00:00").unwrap();
                 if t < crit_datetime {

@@ -1,5 +1,6 @@
 use crate::SchemaVersion;
 use reqwest::RequestBuilder;
+use chrono::{DateTime, Utc};
 
 pub fn request_common_build(
     req: RequestBuilder,
@@ -21,7 +22,7 @@ pub fn request_common_build(
 fn schema_version(version: &SchemaVersion) -> Option<String> {
     match version {
         SchemaVersion::Default => None,
-        SchemaVersion::Time(t) => Some(t.to_rfc3339_opts(chrono::SecondsFormat::Secs, true)),
+        SchemaVersion::Time(t) => Some(DateTime::<Utc>::from_utc(t.clone(), Utc).to_rfc3339_opts(chrono::SecondsFormat::Secs, true)),
         SchemaVersion::Latest => Some(String::from("latest")),
     }
 }

@@ -1,5 +1,6 @@
 use super::ApiDataType;
 use super::ApiResult;
+use std::fmt;
 
 #[allow(dead_code)]
 pub struct ApiClient {
@@ -132,3 +133,15 @@ pub enum SchemaVersion {
     Time(chrono::NaiveDateTime),
     Latest,
 }
+
+
+#[derive(Debug)]
+pub struct NotAuthenticatedError;
+
+impl fmt::Display for NotAuthenticatedError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "API key is invalid, or void")
+    }
+}
+
+impl std::error::Error for NotAuthenticatedError {}
