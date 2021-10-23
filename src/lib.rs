@@ -13,6 +13,7 @@ pub mod currencies;
 pub mod dailycrafting;
 pub mod dungeons;
 pub mod emblem;
+pub mod errors;
 pub mod files;
 pub mod finishers;
 pub mod guild;
@@ -50,19 +51,11 @@ pub mod wvw;
 
 // re-export
 pub use api::ApiClient;
-pub use api::EndPoint;
 pub use api::SchemaVersion;
+pub use errors::Error;
 
 // type redefinition
 type ApiResult<T> = Result<T, Box<dyn std::error::Error>>;
-
-// enumerations
-pub enum Error {
-    NotAuthenticated,
-}
-
-// trait for my ease
-pub trait ApiDataType {}
 
 #[cfg(test)]
 mod tests {
