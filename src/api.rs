@@ -58,6 +58,10 @@ impl ApiClient {
     pub fn commerce(&self) -> crate::commerce::Builder {
         self.into()
     }
+
+    pub fn guild(&self) -> crate::guild::Builder {
+        self.into()
+    }
 }
 
 impl ApiClientBuilder {

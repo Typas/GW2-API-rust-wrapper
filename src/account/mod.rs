@@ -175,6 +175,7 @@ impl Builder {
     into_builder!(mailcarriers, mailcarriers::Builder);
     into_builder!(mapchests, mapchests::Builder);
     into_builder!(masteries, masteries::Builder);
+    into_builder!(materials, materials::Builder);
     into_builder!(minis, minis::Builder);
     into_builder!(novelties, novelties::Builder);
     into_builder!(outfits, outfits::Builder);
@@ -197,7 +198,6 @@ impl From<&ApiClient> for Builder {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use crate::ApiClient;
@@ -216,12 +216,12 @@ mod tests {
     #[should_panic]
     async fn build_no_auth() {
         let client = setup();
-        let _ = client.account().build().await.unwrap();
+        let _t: super::Data = client.account().build().await.unwrap();
     }
 
     #[tokio::test]
     async fn build_with_auth() {
         let client = setup_auth();
-        let _ = client.account().build().await.unwrap();
+        let _t: super::Data = client.account().build().await.unwrap();
     }
 }

@@ -18,7 +18,6 @@ pub struct Builder {
 }
 
 impl Builder {
-
     pub async fn build(self) -> ApiResult<Data> {
         todo!()
     }
@@ -32,5 +31,33 @@ impl From<super::Builder> for Builder {
             version: source.version,
             url: source.url + "/dailycrafting",
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::ApiClient;
+
+    fn setup() -> ApiClient {
+        ApiClient::new().unwrap()
+    }
+
+    // need environment variable GW2_API_KEY
+    fn setup_auth() -> ApiClient {
+        let key = std::env::var("GW2_API_KEY").unwrap();
+        ApiClient::config().unwrap().key(&key).build()
+    }
+
+    #[tokio::test]
+    #[should_panic]
+    async fn build_no_auth() {
+        let client = setup();
+        let _t: super::Data = client.account().dailycrafting().build().await.unwrap();
+    }
+
+    #[tokio::test]
+    async fn build_with_auth() {
+        let client = setup_auth();
+        let _t: super::Data = client.account().dailycrafting().build().await.unwrap();
     }
 }
