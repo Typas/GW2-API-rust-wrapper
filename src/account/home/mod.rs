@@ -7,14 +7,25 @@ use reqwest::Client;
 use std::sync::Arc;
 
 #[derive(Clone)]
-pub struct AccountHomeBuilder {
+pub struct Builder {
     client: Client,
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
+    url: String,
 }
 
-impl AccountHomeBuilder {
-    new_builder_from_params!();
-    into_builder!(cats, AccountHomeCatsBuilder);
-    into_builder!(nodes, AccountHomeNodesBuilder);
+impl Builder {
+    into_builder!(cats, cats::Builder);
+    into_builder!(nodes, nodes::Builder);
+}
+
+impl From<super::Builder> for Builder {
+    fn from(source: super::Builder) -> Self {
+        Self {
+            client: source.client,
+            key: source.key,
+            version: source.version,
+            url: source.url + "/home",
+        }
+    }
 }

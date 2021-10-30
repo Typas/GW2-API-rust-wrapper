@@ -6,134 +6,212 @@ use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
 #[derive(Deserialize, Serialize)]
-pub struct CommerceTranscationsData {}
+pub struct Data {}
 
-impl CommerceTranscationsData {}
-
-#[derive(Clone)]
-pub struct CommerceTranscationsBuilder {
-    client: Client,
-    key: Arc<Option<String>>,
-    version: Arc<SchemaVersion>,
-}
-
-impl CommerceTranscationsBuilder {
-    new_builder_from_params!();
-
-    pub async fn build(self) -> ApiResult<CommerceTranscationsData> {
-        todo!()
-    }
-
-    into_builder!(current, CommerceTranscationsCurrentBuilder, Self);
-    into_builder!(history, CommerceTranscationsHistoryBuilder, Self);
-}
-
-#[derive(Deserialize, Serialize)]
-pub struct CommerceTranscationsCurrentData {}
+impl Data {}
 
 #[derive(Clone)]
-pub struct CommerceTranscationsCurrentBuilder {
+pub struct Builder {
     client: Client,
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
+    url: String,
 }
 
-impl CommerceTranscationsCurrentBuilder {
-    new_builder_from_params!();
-
-    pub async fn build(self) -> ApiResult<CommerceTranscationsCurrentData> {
+impl Builder {
+    pub async fn build(self) -> ApiResult<Data> {
         todo!()
     }
 
-    into_builder!(buys, CommerceTranscationsCurrentBuysBuilder, Self);
-    into_builder!(sells, CommerceTranscationsCurrentSellsBuilder, Self);
+    into_builder!(current, CurrentBuilder);
+    into_builder!(history, HistoryBuilder);
+}
+
+impl From<super::Builder> for Builder {
+    fn from(source: super::Builder) -> Self {
+        Self {
+            client: source.client,
+            key: source.key,
+            version: source.version,
+            url: source.url + "/transcations",
+        }
+    }
 }
 
 #[derive(Deserialize, Serialize)]
-pub struct CommerceTranscationsHistoryData {}
+pub struct CurrentData {}
+
+impl CurrentData {}
 
 #[derive(Clone)]
-pub struct CommerceTranscationsHistoryBuilder {
+pub struct CurrentBuilder {
     client: Client,
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
+    url: String,
 }
 
-impl CommerceTranscationsHistoryBuilder {
-    new_builder_from_params!();
-
-    pub async fn build(self) -> ApiResult<CommerceTranscationsHistoryData> {
+impl CurrentBuilder {
+    pub async fn build(self) -> ApiResult<CurrentData> {
         todo!()
     }
 
-    into_builder!(buys, CommerceTranscationsHistoryBuysBuilder, Self);
-    into_builder!(sells, CommerceTranscationsHistorySellsBuilder, Self);
+    into_builder!(buys, CurrentBuysBuilder);
+    into_builder!(sells, CurrentSellsBuilder);
 }
 
-#[derive(Deserialize, Serialize)]
-pub struct CommerceTranscationsCurrentBuysData {}
-
-pub struct CommerceTranscationsCurrentBuysBuilder {
-    client: Client,
-    key: Arc<Option<String>>,
-    version: Arc<SchemaVersion>,
-}
-
-impl CommerceTranscationsCurrentBuysBuilder {
-    new_builder_from_params!();
-
-    pub async fn build(self) -> ApiResult<CommerceTranscationsCurrentBuysData> {
-        todo!()
+impl From<Builder> for CurrentBuilder {
+    fn from(source: Builder) -> Self {
+        Self {
+            client: source.client,
+            key: source.key,
+            version: source.version,
+            url: source.url + "/current",
+        }
     }
 }
 
 #[derive(Deserialize, Serialize)]
-pub struct CommerceTranscationsCurrentSellsData {}
+pub struct HistoryData {}
 
-pub struct CommerceTranscationsCurrentSellsBuilder {
+impl HistoryData {}
+
+#[derive(Clone)]
+pub struct HistoryBuilder {
     client: Client,
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
+    url: String,
 }
 
-impl CommerceTranscationsCurrentSellsBuilder {
-    new_builder_from_params!();
-
-    pub async fn build(self) -> ApiResult<CommerceTranscationsCurrentSellsData> {
+impl HistoryBuilder {
+    pub async fn build(self) -> ApiResult<HistoryData> {
         todo!()
+    }
+
+    into_builder!(buys, HistoryBuysBuilder);
+    into_builder!(sells, HistorySellsBuilder);
+}
+
+impl From<Builder> for HistoryBuilder {
+    fn from(source: Builder) -> Self {
+        Self {
+            client: source.client,
+            key: source.key,
+            version: source.version,
+            url: source.url + "/history",
+        }
     }
 }
 
 #[derive(Deserialize, Serialize)]
-pub struct CommerceTranscationsHistoryBuysData {}
+pub struct CurrentBuysData {}
 
-pub struct CommerceTranscationsHistoryBuysBuilder {
+impl CurrentBuysData {}
+
+pub struct CurrentBuysBuilder {
     client: Client,
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
+    url: String,
 }
 
-impl CommerceTranscationsHistoryBuysBuilder {
-    new_builder_from_params!();
-
-    pub async fn build(self) -> ApiResult<CommerceTranscationsHistoryBuysData> {
+impl CurrentBuysBuilder {
+    pub async fn build(self) -> ApiResult<CurrentBuysData> {
         todo!()
     }
 }
 
-#[derive(Deserialize, Serialize)]
-pub struct CommerceTranscationsHistorySellsData {}
+impl From<CurrentBuilder> for CurrentBuysBuilder {
+    fn from(source: CurrentBuilder) -> Self {
+        Self {
+            client: source.client,
+            key: source.key,
+            version: source.version,
+            url: source.url + "/buys",
+        }
+    }
+}
 
-pub struct CommerceTranscationsHistorySellsBuilder {
+#[derive(Deserialize, Serialize)]
+pub struct CurrentSellsData {}
+
+pub struct CurrentSellsBuilder {
     client: Client,
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
+    url: String,
 }
 
-impl CommerceTranscationsHistorySellsBuilder {
-    new_builder_from_params!();
-
-    pub async fn build(self) -> ApiResult<CommerceTranscationsHistorySellsData> {
+impl CurrentSellsBuilder {
+    pub async fn build(self) -> ApiResult<CurrentSellsData> {
         todo!()
+    }
+}
+
+impl From<CurrentBuilder> for CurrentSellsBuilder {
+    fn from(source: CurrentBuilder) -> Self {
+        Self {
+            client: source.client,
+            key: source.key,
+            version: source.version,
+            url: source.url + "/sells",
+        }
+    }
+}
+
+#[derive(Deserialize, Serialize)]
+pub struct HistoryBuysData {}
+
+impl HistoryBuysData {}
+
+pub struct HistoryBuysBuilder {
+    client: Client,
+    key: Arc<Option<String>>,
+    version: Arc<SchemaVersion>,
+    url: String,
+}
+
+impl HistoryBuysBuilder {
+    pub async fn build(self) -> ApiResult<HistoryBuysData> {
+        todo!()
+    }
+}
+
+impl From<HistoryBuilder> for HistoryBuysBuilder {
+    fn from(source: HistoryBuilder) -> Self {
+        Self {
+            client: source.client,
+            key: source.key,
+            version: source.version,
+            url: source.url + "/buys",
+        }
+    }
+}
+
+#[derive(Deserialize, Serialize)]
+pub struct HistorySellsData {}
+
+pub struct HistorySellsBuilder {
+    client: Client,
+    key: Arc<Option<String>>,
+    version: Arc<SchemaVersion>,
+    url: String,
+}
+
+impl HistorySellsBuilder {
+    pub async fn build(self) -> ApiResult<HistorySellsData> {
+        todo!()
+    }
+}
+
+impl From<HistoryBuilder> for HistorySellsBuilder {
+    fn from(source: HistoryBuilder) -> Self {
+        Self {
+            client: source.client,
+            key: source.key,
+            version: source.version,
+            url: source.url + "/sells",
+        }
     }
 }

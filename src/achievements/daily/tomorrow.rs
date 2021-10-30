@@ -4,33 +4,43 @@ use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
-pub enum AchievementsDailyTomorrowData {
-    Pre20190516(AchievementDailyTomorrowDataPre20190516Schema),
-    Post20190516(AchievementDailyTomorrowDataPost20190516Schema),
+pub enum Data {
+    Pre20190516(DataPre20190516Schema),
+    Post20190516(DataPost20190516Schema),
 }
 
-impl AchievementsDailyTomorrowData {}
+impl Data {}
 
 #[derive(Deserialize, Serialize)]
-pub struct AchievementDailyTomorrowDataPre20190516Schema {}
+pub struct DataPre20190516Schema {}
 
-trait_from_jsvalue!(AchievementDailyTomorrowDataPre20190516Schema);
+trait_try_from_jsonvalue!(DataPre20190516Schema);
 
 #[derive(Deserialize, Serialize)]
-pub struct AchievementDailyTomorrowDataPost20190516Schema {}
+pub struct DataPost20190516Schema {}
 
-trait_from_jsvalue!(AchievementDailyTomorrowDataPost20190516Schema);
+trait_try_from_jsonvalue!(DataPost20190516Schema);
 
-pub struct AchievementsDailyTomorrowBuilder {
+pub struct Builder {
     client: Client,
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
+    url: String,
 }
 
-impl AchievementsDailyTomorrowBuilder {
-    new_builder_from_params!();
-
-    pub async fn build(self) -> ApiResult<AchievementsDailyTomorrowData> {
+impl Builder {
+    pub async fn build(self) -> ApiResult<Data> {
         todo!()
+    }
+}
+
+impl From<super::Builder> for Builder {
+    fn from(source: super::Builder) -> Self {
+        Self {
+            client: source.client,
+            key: source.key,
+            version: source.version,
+            url: source.url + "/tomorrow",
+        }
     }
 }

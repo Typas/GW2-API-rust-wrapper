@@ -7,9 +7,9 @@ use std::{fmt, sync::Arc};
 
 #[allow(dead_code)]
 pub struct ApiClient {
-    key: Arc<Option<String>>,
-    client: Client,
-    version: Arc<SchemaVersion>,
+    pub(crate) key: Arc<Option<String>>,
+    pub(crate) client: Client,
+    pub(crate) version: Arc<SchemaVersion>,
 }
 
 #[allow(dead_code)]
@@ -33,32 +33,37 @@ impl ApiClient {
     /// get API date by selecting endpoint
     /// remember to use right type to get the data, or it would panic
     pub async fn free_style(&self, path: &str) -> ApiResult<JsonValue> {
-        let url = String::from("https://api.guildwars2.com/v2") + path;
+        let url = String::from("https://api.guildwars2.com/v2/") + path;
 
         // XXX: I want to combine these to one statement
-        let req = self.client.get(&url);
-        let req = request_common_build(req, &self.key, &self.version);
+        let req = request_common_build(&self.client, &self.key, &self.version, &url);
 
         let data = req.send().await?.json().await?;
 
         Ok(data)
     }
 
-    pub fn account(&self) -> crate::account::AccountBuilder {
-        crate::account::AccountBuilder::new(
-            self.client.clone(),
-            self.key.clone(),
-            self.version.clone(),
-        )
+    pub fn account(&self) -> crate::account::Builder {
+        self.into()
+    }
+
+    pub fn achievements(&self) -> crate::achievements::Builder {
+        self.into()
+    }
+
+    pub fn backstory(&self) -> crate::backstory::Builder {
+        self.into()
+    }
+
+    pub fn commerce(&self) -> crate::commerce::Builder {
+        self.into()
     }
 }
 
 impl ApiClientBuilder {
     /// create a default setting
     pub fn new() -> ApiResult<Self> {
-        let client = reqwest::ClientBuilder::new()
-            .https_only(true)
-            .build()?;
+        let client = reqwest::ClientBuilder::new().https_only(true).build()?;
 
         let item = ApiClientBuilder {
             key: Arc::new(None),

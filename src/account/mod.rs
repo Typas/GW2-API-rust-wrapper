@@ -27,13 +27,13 @@ pub mod worldbosses;
 
 use crate::api::NotAuthenticatedError;
 use crate::util::*;
-use crate::{ApiResult, SchemaVersion};
+use crate::{ApiResult, SchemaVersion, ApiClient};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
 #[derive(Deserialize, Serialize)]
-pub struct AccountData {
+pub struct Data {
     id: String,
     age: u32,
     name: String,
@@ -50,7 +50,7 @@ pub struct AccountData {
     last_modified: Option<String>,
 }
 
-impl AccountData {
+impl Data {
     /// The unique persistent account GUID.
     pub fn id(&self) -> &str {
         self.id.as_str()
@@ -138,56 +138,65 @@ impl AccountData {
 }
 
 #[derive(Clone)]
-pub struct AccountBuilder {
+pub struct Builder {
     client: Client,
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
+    url: String,
 }
 
-impl AccountBuilder {
-    new_builder_from_params!();
-
+impl Builder {
     /// Get account data from api.guildwars2.com .
     /// Returns `NotAuthenticatedError` when trying to access without api key
-    pub async fn build(self) -> ApiResult<AccountData> {
+    pub async fn build(self) -> ApiResult<Data> {
         if let None = Option::as_ref(&self.key) {
             return Err(Box::new(NotAuthenticatedError));
         }
-        let url = "https://api.guildwars2.com/v2/account";
 
-        let req = self.client.get(url);
-        let req = request_common_build(req, &self.key, &self.version);
+        let req = request_common_build(&self.client, &self.key, &self.version, &self.url);
 
         let data = req.send().await?.json().await?;
         Ok(data)
     }
 
-    into_builder!(home, AccountHomeBuilder);
-    into_builder!(mastery, AccountMasteryBuilder);
-    into_builder!(mounts, AccountMountsBuilder);
-    into_builder!(pvp, AccountPvpBuilder);
-    into_builder!(achievements, AccountAchievementsBuilder);
-    into_builder!(bank, AccountBankBuilder);
-    into_builder!(dailycrafting, AccountDailyCraftingBuilder);
-    into_builder!(dungeons, AccountDungeonsBuilder);
-    into_builder!(dyes, AccountDyesBuilder);
-    into_builder!(finishers, AccountFinishersBuilder);
-    into_builder!(gliders, AccountGlidersBuilder);
-    into_builder!(inventory, AccountInventoryBuilder);
-    into_builder!(luck, AccountLuckBuilder);
-    into_builder!(mailcarriers, AccountMailCarriersBuilder);
-    into_builder!(mapchests, AccountMapChestsBuilder);
-    into_builder!(masteries, AccountMasteriesBuilder);
-    into_builder!(minis, AccountMinisBuilder);
-    into_builder!(novelties, AccountNoveltiesBuilder);
-    into_builder!(outfits, AccountOutfitsBuilder);
-    into_builder!(raids, AccountRaidsBuilder);
-    into_builder!(recipes, AccountRecipesBuilder);
-    into_builder!(skins, AccountSkinsBuilder);
-    into_builder!(titles, AccountTitlesBuilder);
-    into_builder!(wallet, AccountWalletBuilder);
-    into_builder!(worldbosses, AccountWorldBossesBuilder);
+    into_builder!(home, home::Builder);
+    into_builder!(mastery, mastery::Builder);
+    into_builder!(mounts, mounts::Builder);
+    into_builder!(pvp, pvp::Builder);
+    into_builder!(achievements, achievements::Builder);
+    into_builder!(bank, bank::Builder);
+    into_builder!(dailycrafting, dailycrafting::Builder);
+    into_builder!(dungeons, dungeons::Builder);
+    into_builder!(dyes, dyes::Builder);
+    into_builder!(finishers, finishers::Builder);
+    into_builder!(gliders, gliders::Builder);
+    into_builder!(inventory, inventory::Builder);
+    into_builder!(luck, luck::Builder);
+    into_builder!(mailcarriers, mailcarriers::Builder);
+    into_builder!(mapchests, mapchests::Builder);
+    into_builder!(masteries, masteries::Builder);
+    into_builder!(minis, minis::Builder);
+    into_builder!(novelties, novelties::Builder);
+    into_builder!(outfits, outfits::Builder);
+    into_builder!(raids, raids::Builder);
+    into_builder!(recipes, recipes::Builder);
+    into_builder!(skins, skins::Builder);
+    into_builder!(titles, titles::Builder);
+    into_builder!(wallet, wallet::Builder);
+    into_builder!(worldbosses, worldbosses::Builder);
 }
+
+impl From<&ApiClient> for Builder {
+    fn from(source: &ApiClient) -> Self {
+        Self {
+            client: source.client.clone(),
+            key: source.key.clone(),
+            version: source.version.clone(),
+            url: "https://api.guildwars2.com/v2/account".to_string(),
+        }
+    }
+}
+
 
 #[cfg(test)]
 mod tests {

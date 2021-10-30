@@ -5,24 +5,34 @@ use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
 #[derive(Deserialize, Serialize)]
-pub struct CommerceExchangeCoinsData {}
+pub struct Data {}
 
-impl CommerceExchangeCoinsData {}
+impl Data {}
 
-pub struct CommerceExchangeCoinsBuilder {
+pub struct Builder {
     client: Client,
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
+    url: String,
 }
 
-impl CommerceExchangeCoinsBuilder {
-    new_builder_from_params!();
-
-    pub async fn build(self) -> ApiResult<CommerceExchangeCoinsData> {
+impl Builder {
+    pub async fn build(self) -> ApiResult<Data> {
         self.build_with_quantity(100_00_00).await
     }
 
-    pub async fn build_with_quantity(self, _quantity: u32) -> ApiResult<CommerceExchangeCoinsData> {
+    pub async fn build_with_quantity(self, _quantity: u32) -> ApiResult<Data> {
         todo!()
+    }
+}
+
+impl From<super::Builder> for Builder {
+    fn from(source: super::Builder) -> Self {
+        Self {
+            client: source.client,
+            key: source.key,
+            version: source.version,
+            url: source.url + "/coins",
+        }
     }
 }

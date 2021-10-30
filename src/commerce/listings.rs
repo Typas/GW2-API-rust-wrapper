@@ -5,57 +5,82 @@ use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
 #[derive(Deserialize, Serialize)]
-pub struct CommerceListingsData {}
+pub struct Data {}
 
-impl CommerceListingsData {}
+impl Data {}
 
 #[derive(Clone)]
-pub struct CommerceListingsBuilder {
+pub struct Builder {
     client: Client,
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
+    url: String,
 }
 
-impl CommerceListingsBuilder {
-    new_builder_from_params!();
-
-    pub async fn build(self) -> ApiResult<CommerceListingsData> {
+impl Builder {
+    pub async fn build(self) -> ApiResult<Data> {
         todo!()
     }
 
-    into_builder!(id, CommerceListingsIdBuilder, id: u32);
-    into_builder!(ids, CommerceListingsMultiIdBuilder, ids: Vec<u32>);
+    pub fn id(self, id: u32) -> IdBuilder {
+        IdBuilder {
+            client: self.client,
+            key: self.key,
+            version: self.version,
+            url: self.url + "/",
+            id,
+        }
+    }
+
+    pub fn ids(self, ids: Vec<u32>) -> MultiIdBuilder {
+        MultiIdBuilder {
+            client: self.client,
+            key: self.key,
+            version: self.version,
+            url: self.url + "?ids=",
+            ids,
+        }
+    }
+}
+
+impl From<super::Builder> for Builder {
+    fn from(source: super::Builder) -> Self {
+        Self {
+            client: source.client,
+            key: source.key,
+            version: source.version,
+            url: source.url + "/listings",
+        }
+    }
 }
 
 #[derive(Deserialize, Serialize)]
-pub struct CommerceListingsIdData {}
+pub struct IdData {}
 
-pub struct CommerceListingsIdBuilder {
+pub struct IdBuilder {
     client: Client,
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
+    url: String,
     id: u32,
 }
 
-impl CommerceListingsIdBuilder {
-    new_builder_from_params!(id: u32);
-
-    pub async fn build(self) -> ApiResult<CommerceListingsIdData> {
+impl IdBuilder {
+    pub async fn build(self) -> ApiResult<IdData> {
         todo!()
     }
 }
 
-pub struct CommerceListingsMultiIdBuilder {
+pub struct MultiIdBuilder {
     client: Client,
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
+    url: String,
     ids: Vec<u32>,
 }
 
-impl CommerceListingsMultiIdBuilder {
-    new_builder_from_params!(ids: Vec<u32>);
-
-    pub async fn build(self) -> ApiResult<Vec<CommerceListingsIdData>> {
+impl MultiIdBuilder {
+    pub async fn build(self) -> ApiResult<Vec<IdData>> {
         todo!()
     }
 }

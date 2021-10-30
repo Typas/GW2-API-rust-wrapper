@@ -5,58 +5,83 @@ use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
 #[derive(Deserialize, Serialize)]
-pub struct AchievementsCategoriesData {}
+pub struct Data {}
 
-impl AchievementsCategoriesData {}
+impl Data {}
 
 #[derive(Clone)]
-pub struct AchievementsCategoriesBuilder {
+pub struct Builder {
     client: Client,
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
+    url: String,
 }
 
-impl AchievementsCategoriesBuilder {
-    new_builder_from_params!();
-
-    pub async fn build(self) -> ApiResult<AchievementsCategoriesData> {
+impl Builder {
+    pub async fn build(self) -> ApiResult<Data> {
         todo!()
     }
 
-    into_builder!(id, AchievementsCategoriesIdBuilder, id: u32);
-    into_builder!(ids, AchievementsCategoriesMultiIdBuilder, ids: Vec<u32>);
+    pub fn id(self, id: u32) -> IdBuilder {
+        IdBuilder {
+            client: self.client,
+            key: self.key,
+            version: self.version,
+            url: self.url + "/",
+            id,
+        }
+    }
+
+    pub fn ids(self, ids: Vec<u32>) -> MultiIdBuilder {
+        MultiIdBuilder {
+            client: self.client,
+            key: self.key,
+            version: self.version,
+            url: self.url + "?ids=",
+            ids,
+        }
+    }
 }
 
-pub struct AchievementsCategoriesIdData {}
+impl From<super::Builder> for Builder {
+    fn from(source: super::Builder) -> Self {
+        Self {
+            client: source.client,
+            key: source.key,
+            version: source.version,
+            url: source.url + "/categories",
+        }
+    }
+}
 
-impl AchievementsCategoriesIdData {}
+pub struct IdData {}
 
-pub struct AchievementsCategoriesIdBuilder {
+impl IdData {}
+
+pub struct IdBuilder {
     client: Client,
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
+    url: String,
     id: u32,
 }
 
-impl AchievementsCategoriesIdBuilder {
-    new_builder_from_params!(id: u32);
-
-    pub async fn build(self) -> ApiResult<AchievementsCategoriesIdData> {
+impl IdBuilder {
+    pub async fn build(self) -> ApiResult<IdData> {
         todo!()
     }
 }
 
-pub struct AchievementsCategoriesMultiIdBuilder {
+pub struct MultiIdBuilder {
     client: Client,
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
+    url: String,
     ids: Vec<u32>,
 }
 
-impl AchievementsCategoriesMultiIdBuilder {
-    new_builder_from_params!(ids: Vec<u32>);
-
-    pub async fn build(self) -> ApiResult<Vec<AchievementsCategoriesIdData>> {
+impl MultiIdBuilder {
+    pub async fn build(self) -> ApiResult<Vec<IdData>> {
         todo!()
     }
 }

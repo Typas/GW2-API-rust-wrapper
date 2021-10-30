@@ -7,14 +7,25 @@ use reqwest::Client;
 use std::sync::Arc;
 
 #[derive(Clone)]
-pub struct CommerceExchangeBuilder {
+pub struct Builder {
     client: Client,
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
+    url: String,
 }
 
-impl CommerceExchangeBuilder {
-    new_builder_from_params!();
-    into_builder!(coins, CommerceExchangeCoinsBuilder);
-    into_builder!(gems, CommerceExchangeGemsBuilder);
+impl Builder {
+    into_builder!(coins, coins::Builder);
+    into_builder!(gems, gems::Builder);
+}
+
+impl From<super::Builder> for Builder {
+    fn from(source: super::Builder) -> Self {
+        Self {
+            client: source.client,
+            key: source.key,
+            version: source.version,
+            url: source.url + "/exchange",
+        }
+    }
 }

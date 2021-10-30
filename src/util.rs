@@ -1,12 +1,13 @@
 use crate::SchemaVersion;
-use reqwest::RequestBuilder;
 use chrono::{DateTime, Utc};
 
-pub fn request_common_build(
-    req: RequestBuilder,
+pub(crate) fn request_common_build(
+    client: &reqwest::Client,
     key: &Option<String>,
     ver: &SchemaVersion,
-) -> RequestBuilder {
+    url: &str,
+) -> reqwest::RequestBuilder {
+    let req = client.get(url);
     let req = match key {
         Some(key) => req.bearer_auth(&key),
         None => req,
@@ -28,67 +29,26 @@ fn schema_version(version: &SchemaVersion) -> Option<String> {
 }
 
 macro_rules! into_builder {
-    ( $fn_name:ident, $struct:ident ) => {
-        pub fn $fn_name(self) -> $fn_name::$struct {
-            $fn_name::$struct::new(self.client, self.key, self.version)
-        }
-    };
-
-    ( $fn_name:ident, $struct:ident, Self) => {
+    ( $fn_name:ident, $struct:path ) => {
         pub fn $fn_name(self) -> $struct {
-            $struct::new(self.client, self.key, self.version)
+            self.into()
         }
     };
-
-    ( $fn_name:ident, $struct:ident $(, $field:ident : $type:ty )+ ) => {
-        pub fn $fn_name(self $(, $field: $type)+ ) -> $struct {
-            $struct::new(self.client, self.key, self.version $(,$field)+)
-        }
-    }
 }
 
-macro_rules! new_builder_from_params {
-    () => {
-        pub(super) fn new(
-            client: Client,
-            key: Arc<Option<String>>,
-            version: Arc<SchemaVersion>
-        ) -> Self {
-            Self {
-                client,
-                key,
-                version,
-            }
-        }
-    };
-
-    ($($field:tt : $type:ty)+ $(,)? ) => {
-        pub(super) fn new(
-            client: Client,
-            key: Arc<Option<String>>,
-            version: Arc<SchemaVersion>
-                $(, $field: $type)+)
-            -> Self {
-            Self {
-                client,
-                key,
-                version,
-                $($field,)+
-            }
-        }
-    }
-}
-
-macro_rules! trait_from_jsvalue {
+macro_rules! trait_try_from_jsonvalue {
     ( $struct:ident ) => {
-        impl std::convert::From<serde_json::Value> for $struct {
-            fn from(val: serde_json::Value) -> Self {
-                serde_json::from_value(val).unwrap()
+        impl TryFrom<serde_json::Value> for $struct {
+            type Error = serde_json::Error;
+
+            fn try_from(val: serde_json::Value) -> Result<Self, Self::Error> {
+                serde_json::from_value(val)
             }
         }
+
+
     };
 }
 
 pub(crate) use into_builder;
-pub(crate) use new_builder_from_params;
-pub(crate) use trait_from_jsvalue;
+pub(crate) use trait_try_from_jsonvalue;

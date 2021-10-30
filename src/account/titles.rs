@@ -6,20 +6,30 @@ use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
 #[derive(Deserialize, Serialize)]
-pub struct AccountTitlesData {}
+pub struct Data {}
 
-impl AccountTitlesData {}
+impl Data {}
 
-pub struct AccountTitlesBuilder {
+pub struct Builder {
     client: Client,
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
+    url: String,
 }
 
-impl AccountTitlesBuilder {
-    new_builder_from_params!();
-
-    pub async fn build(self) -> ApiResult<AccountTitlesData> {
+impl Builder {
+    pub async fn build(self) -> ApiResult<Data> {
         todo!()
+    }
+}
+
+impl From<super::Builder> for Builder {
+    fn from(source: super::Builder) -> Self {
+        Self {
+            client: source.client,
+            key: source.key,
+            version: source.version,
+            url: source.url + "/titles",
+        }
     }
 }

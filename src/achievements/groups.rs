@@ -10,52 +10,79 @@ pub struct AchievementsGroupsData {}
 impl AchievementsGroupsData {}
 
 #[derive(Clone)]
-pub struct AchievementsGroupsBuilder {
+pub struct Builder {
     client: Client,
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
+    url: String,
 }
 
-impl AchievementsGroupsBuilder {
-    new_builder_from_params!();
-
+impl Builder {
     pub async fn build(self) -> ApiResult<AchievementsGroupsData> {
         todo!()
     }
 
-    into_builder!(id, AchievementsGroupsIdBuilder, guid: String);
-    into_builder!(ids, AchievementsGroupsMultiIdBuilder, guids: Vec<String>);
+    pub fn id(self, guid: String) -> IdBuilder {
+        IdBuilder {
+            client: self.client,
+            key: self.key,
+            version: self.version,
+            url: self.url + "/",
+            guid,
+        }
+    }
+
+    pub fn ids(self, guids: Vec<String>) -> MultiIdBuilder {
+        MultiIdBuilder {
+            client: self.client,
+            key: self.key,
+            version: self.version,
+            url: self.url + "?ids=",
+            guids,
+        }
+    }
+}
+
+impl From<super::Builder> for Builder {
+    fn from(source: super::Builder) -> Self {
+        Self {
+            client: source.client,
+            key: source.key,
+            version: source.version,
+            url: source.url + "/groups",
+        }
+    }
 }
 
 #[derive(Deserialize, Serialize)]
-pub struct AchievementsGroupsIdData {}
+pub struct IdData {}
 
-pub struct AchievementsGroupsIdBuilder {
+impl IdData {}
+
+pub struct IdBuilder {
     client: Client,
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
+    url: String,
     guid: String,
 }
 
-impl AchievementsGroupsIdBuilder {
-    new_builder_from_params!(guid: String);
-
-    pub async fn build(self) -> ApiResult<AchievementsGroupsIdData> {
+impl IdBuilder {
+    pub async fn build(self) -> ApiResult<IdData> {
         todo!()
     }
 }
 
-pub struct AchievementsGroupsMultiIdBuilder {
+pub struct MultiIdBuilder {
     client: Client,
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
+    url: String,
     guids: Vec<String>,
 }
 
-impl AchievementsGroupsMultiIdBuilder {
-    new_builder_from_params!(guids: Vec<String>);
-
-    pub async fn build(self) -> ApiResult<Vec<AchievementsGroupsIdData>> {
+impl MultiIdBuilder {
+    pub async fn build(self) -> ApiResult<Vec<IdData>> {
         todo!()
     }
 }

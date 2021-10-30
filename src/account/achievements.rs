@@ -4,27 +4,32 @@ use crate::{ApiResult, SchemaVersion};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
+use serde_json::Value as JsonValue;
 
 #[derive(Deserialize, Serialize)]
-pub struct AccountAchievementsData {
-    achievements: Vec<SingleAchievement>,
+pub struct Data {
+    achievements: Vec<Achievement>,
 }
 
-impl AccountAchievementsData {
-    pub fn new(json: serde_json::Value) -> ApiResult<Self> {
-        let data: Vec<SingleAchievement> = serde_json::from_value(json)?;
+impl Data {
+    pub fn from_json_value(json: JsonValue) -> ApiResult<Self> {
+        let data: Vec<Achievement> = serde_json::from_value(json)?;
         let data = Self { achievements: data };
 
         Ok(data)
     }
+}
 
-    pub fn achievements(&self) -> &Vec<SingleAchievement> {
+impl std::ops::Deref for Data {
+    type Target = Vec<Achievement>;
+    fn deref(&self) -> &Self::Target {
         &self.achievements
     }
 }
 
+
 #[derive(Deserialize, Serialize)]
-pub struct SingleAchievement {
+pub struct Achievement {
     id: u32,
     bits: Option<Vec<u32>>,
     current: Option<u32>,
@@ -34,7 +39,7 @@ pub struct SingleAchievement {
     unlocked: Option<bool>,
 }
 
-impl SingleAchievement {
+impl Achievement {
     /// The achievement id.
     pub fn id(&self) -> u32 {
         self.id
@@ -79,28 +84,36 @@ impl SingleAchievement {
     }
 }
 
-trait_from_jsvalue!(SingleAchievement);
+trait_try_from_jsonvalue!(Achievement);
 
-pub struct AccountAchievementsBuilder {
+pub struct Builder {
     client: Client,
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
+    url: String,
 }
 
-impl AccountAchievementsBuilder {
-    new_builder_from_params!();
+impl Builder {
 
-    pub async fn build(self) -> ApiResult<AccountAchievementsData> {
+    pub async fn build(self) -> ApiResult<Data> {
         if let None = Option::as_ref(&self.key) {
             return Err(Box::new(NotAuthenticatedError));
         }
-        let url = "https://api.guildwars2.com/v2/account/achievements";
-
-        let req = self.client.get(url);
-        let req = request_common_build(req, &self.key, &self.version);
+        let req = request_common_build(&self.client, &self.key, &self.version, &self.url);
 
         // XXX: inconsistency of store into data
-        let data: Vec<SingleAchievement> = req.send().await?.json().await?;
-        Ok(AccountAchievementsData { achievements: data })
+        let data: Vec<Achievement> = req.send().await?.json().await?;
+        Ok(Data { achievements: data })
+    }
+}
+
+impl From<super::Builder> for Builder {
+    fn from(source: super::Builder) -> Self {
+        Self {
+            client: source.client,
+            key: source.key,
+            version: source.version,
+            url: source.url + "/achievements",
+        }
     }
 }

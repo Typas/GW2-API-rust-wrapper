@@ -5,57 +5,82 @@ use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
 #[derive(Deserialize, Serialize)]
-pub struct BackStoryQuestionsData {}
+pub struct Data {}
 
-impl BackStoryQuestionsData {}
+impl Data {}
 
 #[derive(Clone)]
-pub struct BackStoryQuestionsBuilder {
+pub struct Builder {
     client: Client,
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
+    url: String,
 }
 
-impl BackStoryQuestionsBuilder {
-    new_builder_from_params!();
-
-    pub async fn build(self) -> ApiResult<BackStoryQuestionsData> {
+impl Builder {
+    pub async fn build(self) -> ApiResult<Data> {
         todo!()
     }
 
-    into_builder!(id, BackStoryQuestionsIdBuilder, sid: String);
-    into_builder!(ids, BackStoryQuestionsMultiIdBuilder, sids: Vec<String>);
+    pub fn id(self, sid: String) -> IdBuilder {
+        IdBuilder {
+            client: self.client,
+            key: self.key,
+            version: self.version,
+            url: self.url + "/",
+            sid,
+        }
+    }
+
+    pub fn ids(self, sids: Vec<String>) -> MultiIdBuilder {
+        MultiIdBuilder {
+            client: self.client,
+            key: self.key,
+            version: self.version,
+            url: self.url + "?ids=",
+            sids,
+        }
+    }
+}
+
+impl From<super::Builder> for Builder {
+    fn from(source: super::Builder) -> Self {
+        Self {
+            client: source.client,
+            key: source.key,
+            version: source.version,
+            url: source.url + "/questions",
+        }
+    }
 }
 
 #[derive(Deserialize, Serialize)]
-pub struct BackStoryQuestionsIdData {}
+pub struct IdData {}
 
-pub struct BackStoryQuestionsIdBuilder {
+pub struct IdBuilder {
     client: Client,
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
+    url: String,
     sid: String,
 }
 
-impl BackStoryQuestionsIdBuilder {
-    new_builder_from_params!(sid: String);
-
-    pub async fn build(self) -> ApiResult<BackStoryQuestionsIdData> {
+impl IdBuilder {
+    pub async fn build(self) -> ApiResult<IdData> {
         todo!()
     }
 }
 
-pub struct BackStoryQuestionsMultiIdBuilder {
+pub struct MultiIdBuilder {
     client: Client,
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
+    url: String,
     sids: Vec<String>,
 }
 
-impl BackStoryQuestionsMultiIdBuilder {
-    new_builder_from_params!(sids: Vec<String>);
-
-    pub async fn build(self) -> ApiResult<BackStoryQuestionsIdData> {
+impl MultiIdBuilder {
+    pub async fn build(self) -> ApiResult<IdData> {
         todo!()
     }
 }
