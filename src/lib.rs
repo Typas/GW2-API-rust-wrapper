@@ -101,6 +101,7 @@ pub mod wvw;
 // re-export
 pub use api::ApiClient;
 pub use api::SchemaVersion;
+pub use api::Language;
 pub use errors::Error;
 
 // type redefinition

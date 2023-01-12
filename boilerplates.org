@@ -1,0 +1,471 @@
+#+TITLE: Boilerplates
+
+* mod.rs direct to =ApiBuilder=
+#+BEGIN_SRC rust
+// public submodules
+
+use crate::util::*;
+use crate::{ApiResult, SchemaVersion, ApiClient};
+use reqwest::Client;
+use serde::{Deserialize, Serialize};
+use std::sync::Arc;
+
+#[derive(Deserialize, Serialize)]
+pub struct Data {}
+
+impl Data {}
+
+#[derive(Clone)]
+pub struct Builder {
+    client: Client,
+    key: Arc<Option<String>>,
+    version: Arc<SchemaVersion>,
+    url: String,
+}
+
+impl Builder {
+    into_builder!(submodule, submodule::Builder);
+}
+
+impl From<&ApiClient> for Builder {
+    fn from(source: &ApiClient) -> Self {
+        Self {
+            client: source.client.clone(),
+            key: source.key.clone(),
+            version: source.version.clone(),
+            url: "https://api.guildwars2.com/v2/need-modification".to_string(),
+        }
+    }
+}
+#+END_SRC
+
+* mod.rs direct to =ApiBuilder=, with self as endpoint
+#+BEGIN_SRC rust
+// public submodules
+
+use crate::util::*;
+use crate::{ApiResult, SchemaVersion, ApiClient};
+use reqwest::Client;
+use serde::{Deserialize, Serialize};
+use std::sync::Arc;
+
+#[derive(Deserialize, Serialize)]
+pub struct Data {}
+
+impl Data {}
+
+#[derive(Clone)]
+pub struct Builder {
+    client: Client,
+    key: Arc<Option<String>>,
+    version: Arc<SchemaVersion>,
+    url: String,
+}
+
+impl Builder {
+    pub async fn get(self) -> ApiResult<Data> {
+        todo!()
+    }
+
+    into_builder!(submodule, submodule::Builder);
+}
+
+impl From<&ApiClient> for Builder {
+    fn from(source: &ApiClient) -> Self {
+        Self {
+            client: source.client.clone(),
+            key: source.key.clone(),
+            version: source.version.clone(),
+            url: "https://api.guildwars2.com/v2/need-modification".to_string(),
+        }
+    }
+}
+#+END_SRC
+
+* mod.rs otherwise
+#+BEGIN_SRC rust
+// public submodules
+
+use crate::api::{NotAuthenticatedError, Language};
+use crate::util::*;
+use crate::{ApiResult, SchemaVersion};
+use reqwest::Client;
+use serde::{Deserialize, Serialize};
+use std::sync::Arc;
+
+#[derive(Deserialize, Serialize)]
+pub struct Data {}
+
+impl Data {}
+
+pub struct Builder {
+    client: Client,
+    key: Arc<Option<String>>,
+    version: Arc<SchemaVersion>,
+    url: String,
+}
+
+impl Builder {
+    into_builder!(submodule, submodule::Builder);
+}
+
+impl From<super::Builder> for Builder {
+    fn from(source: super::Builder) -> Self {
+        Self {
+            client: source.client,
+            key: source.key,
+            version: source.version,
+            url: source.url + "/need-modification",
+            lang: None,
+        }
+    }
+}
+#+END_SRC
+
+* mod.rs otherwise, with self as endpoint
+#+BEGIN_SRC rust
+// public submodules
+
+use crate::api::{NotAuthenticatedError, Language};
+use crate::util::*;
+use crate::{ApiResult, SchemaVersion};
+use reqwest::Client;
+use serde::{Deserialize, Serialize};
+use std::sync::Arc;
+
+#[derive(Deserialize, Serialize)]
+pub struct Data {}
+
+impl Data {}
+
+pub struct Builder {
+    client: Client,
+    key: Arc<Option<String>>,
+    version: Arc<SchemaVersion>,
+    url: String,
+}
+
+impl Builder {
+    pub async fn get(self) -> ApiResult<Data> {
+        todo!()
+    }
+
+    into_builder!(submodule, submodule::Builder);
+}
+
+impl From<super::Builder> for Builder {
+    fn from(source: super::Builder) -> Self {
+        Self {
+            client: source.client,
+            key: source.key,
+            version: source.version,
+            url: source.url + "/need-modification",
+            lang: None,
+        }
+    }
+}
+#+END_SRC
+
+* any.rs
+#+BEGIN_SRC rust
+use crate::api::NotAuthenticatedError;
+use crate::util::*;
+use crate::{ApiResult, SchemaVersion};
+use reqwest::Client;
+use serde::{Deserialize, Serialize};
+use std::sync::Arc;
+
+#[derive(Deserialize, Serialize)]
+pub struct Data {}
+
+impl Data {}
+
+pub struct Builder {
+    client: Client,
+    key: Arc<Option<String>>,
+    version: Arc<SchemaVersion>,
+    url: String,
+}
+
+impl Builder {
+    pub async fn get(self) -> ApiResult<Data> {
+        todo!()
+    }
+}
+
+impl From<super::Builder> for Builder {
+    fn from(source: super::Builder) -> Self {
+        Self {
+            client: source.client,
+            key: source.key,
+            version: source.version,
+            url: source.url + "/need-modification",
+        }
+    }
+}
+#+END_SRC
+
+* any.rs with lang
+#+BEGIN_SRC rust
+use crate::util::*;
+use crate::{SchemaVersion, ApiResult, Language};
+use reqwest::Client;
+use serde::{Deserialize, Serialize};
+use std::sync::Arc;
+
+#[derive(Deserialize, Serialize)]
+pub struct Data {}
+
+impl Data {}
+
+#[derive(Clone)]
+pub struct Builder {
+    client: Client,
+    key: Arc<Option<String>>,
+    version: Arc<SchemaVersion>,
+    url: String,
+    lang: Option<Language>,
+}
+
+impl Builder {
+    pub async fn get(self) -> ApiResult<Data> {
+        todo!()
+    }
+
+    pub fn lang(self, lang: Language) -> Self {
+        Self {
+            lang: Some(lang),
+            ..self
+        }
+    }
+}
+
+impl From<super::IdBuilder> for Builder {
+    fn from(source: super::IdBuilder) -> Self {
+        Self {
+            client: source.client,
+            key: source.key,
+            version: source.version,
+            url: source.url + "/need-modification",
+            lang: None,
+        }
+    }
+}
+#+END_SRC
+
+* any.rs with id and ids
+#+BEGIN_SRC rust
+use crate::util::*;
+use crate::{SchemaVersion, ApiResult};
+use reqwest::Client;
+use serde::{Deserialize, Serialize};
+use std::sync::Arc;
+
+#[derive(Deserialize, Serialize)]
+pub struct Data {}
+
+impl Data {}
+
+#[derive(Clone)]
+pub struct Builder {
+    client: Client,
+    key: Arc<Option<String>>,
+    version: Arc<SchemaVersion>,
+    url: String,
+}
+
+impl Builder {
+    pub async fn get(self) -> ApiResult<Data> {
+        todo!()
+    }
+
+    pub fn id(self, sid: &str) -> IdBuilder {
+        IdBuilder {
+            client: self.client,
+            key: self.key,
+            version: self.version,
+            url: self.url + "/",
+            sid: sid.to_string(),
+        }
+    }
+
+    pub fn ids(self, sids: Vec<String>) -> MultiIdBuilder {
+        MultiIdBuilder {
+            client: self.client,
+            key: self.key,
+            version: self.version,
+            url: self.url,
+            sids,
+        }
+    }
+}
+
+impl From<super::Builder> for Builder {
+    fn from(source: super::Builder) -> Self {
+        Self {
+            client: source.client,
+            key: source.key,
+            version: source.version,
+            url: source.url + "/need-modification",
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct IdData {}
+
+impl IdData {}
+
+pub struct IdBuilder {
+    client: Client,
+    key: Arc<Option<String>>,
+    version: Arc<SchemaVersion>,
+    url: String,
+    sid: String,
+}
+
+impl IdBuilder {
+    pub async fn get(self) -> ApiResult<IdData> {
+        todo!()
+    }
+}
+
+pub struct MultiIdBuilder {
+    client: Client,
+    key: Arc<Option<String>>,
+    version: Arc<SchemaVersion>,
+    url: String,
+    sids: Vec<String>,
+}
+
+impl MultiIdBuilder {
+    pub async fn get(self) -> ApiResult<Vec<IdData>> {
+        todo!()
+    }
+}
+#+END_SRC
+
+* any.rs with id and ids, lang, page, page_size
+#+BEGIN_SRC rust
+use crate::util::*;
+use crate::{SchemaVersion, ApiResult, Language};
+use reqwest::Client;
+use serde::{Deserialize, Serialize};
+use std::sync::Arc;
+
+#[derive(Deserialize, Serialize)]
+pub struct Data {}
+
+impl Data {}
+
+#[derive(Clone)]
+pub struct Builder {
+    client: Client,
+    key: Arc<Option<String>>,
+    version: Arc<SchemaVersion>,
+    url: String,
+    lang: Option<Language>,
+    page: Option<u32>,
+    page_size: Option<u32>,
+}
+
+impl Builder {
+    pub async fn get(self) -> ApiResult<Data> {
+        todo!()
+    }
+
+    pub fn lang(self, lang: Language) -> Self {
+        Self {
+            lang: Some(lang),
+            ..self
+        }
+    }
+
+    pub fn page(self, page: u32) -> Self {
+        Self {
+            page: Some(page),
+            ..self
+        }
+    }
+
+    pub fn page_size(self, page_size: u32) -> Self {
+        Self {
+            page_size: Some(page_size),
+            ..self
+        }
+    }
+
+    pub fn id(self, sid: &str) -> IdBuilder {
+        IdBuilder {
+            client: self.client,
+            key: self.key,
+            version: self.version,
+            url: self.url + "/",
+            sid: sid.to_string(),
+        }
+    }
+
+    pub fn ids(self, sids: Vec<String>) -> MultiIdBuilder {
+        MultiIdBuilder {
+            client: self.client,
+            key: self.key,
+            version: self.version,
+            url: self.url,
+            sids,
+        }
+    }
+}
+
+impl From<super::Builder> for Builder {
+    fn from(source: super::Builder) -> Self {
+        Self {
+            client: source.client,
+            key: source.key,
+            version: source.version,
+            url: source.url + "/need-modification",
+            lang: None,
+            page: None,
+            page_size: None,
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct IdData {}
+
+impl IdData {}
+
+pub struct IdBuilder {
+    client: Client,
+    key: Arc<Option<String>>,
+    version: Arc<SchemaVersion>,
+    url: String,
+    lang: Option<Language>,
+    page: Option<u32>,
+    page_size: Option<u32>,
+    sid: String,
+}
+
+impl IdBuilder {
+    pub async fn get(self) -> ApiResult<IdData> {
+        todo!()
+    }
+}
+
+pub struct MultiIdBuilder {
+    client: Client,
+    key: Arc<Option<String>>,
+    version: Arc<SchemaVersion>,
+    url: String,
+    lang: Option<Language>,
+    page: Option<u32>,
+    page_size: Option<u32>,
+    sids: Vec<String>,
+}
+
+impl MultiIdBuilder {
+    pub async fn get(self) -> ApiResult<Vec<IdData>> {
+        todo!()
+    }
+}
+#+END_SRC

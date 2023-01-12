@@ -7,6 +7,7 @@ pub mod finishers;
 pub mod gliders;
 pub mod home;
 pub mod inventory;
+pub mod legendaryarmory;
 pub mod luck;
 pub mod mailcarriers;
 pub mod mapchests;
@@ -27,7 +28,7 @@ pub mod worldbosses;
 
 use crate::api::NotAuthenticatedError;
 use crate::util::*;
-use crate::{ApiResult, SchemaVersion, ApiClient};
+use crate::{ApiClient, ApiResult, SchemaVersion};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
@@ -48,6 +49,7 @@ pub struct Data {
     monthly_ap: Option<u32>,
     wvw_rank: Option<u32>,
     last_modified: Option<String>,
+    build_storage_slots: Option<u32>,
 }
 
 impl Data {
@@ -135,6 +137,12 @@ impl Data {
     pub fn last_modified(&self) -> Option<String> {
         self.last_modified.clone()
     }
+
+    /// The amount of build storage slot an account has unlocked. Requires additional `builds` scope.
+    /// This field is only present when a Schema version of `2019-12-19T00:00:00.000Z` or later is requested.
+    pub fn build_storage_slots(&self) -> Option<u32> {
+        self.build_storage_slots
+    }
 }
 
 #[derive(Clone)]
@@ -148,7 +156,7 @@ pub struct Builder {
 impl Builder {
     /// Get account data from api.guildwars2.com .
     /// Returns `NotAuthenticatedError` when trying to access without api key
-    pub async fn build(self) -> ApiResult<Data> {
+    pub async fn get(self) -> ApiResult<Data> {
         if let None = Option::as_ref(&self.key) {
             return Err(Box::new(NotAuthenticatedError));
         }
@@ -172,6 +180,7 @@ impl Builder {
     into_builder!(gliders, gliders::Builder);
     into_builder!(inventory, inventory::Builder);
     into_builder!(luck, luck::Builder);
+    into_builder!(legendaryarmory, legendaryarmory::Builder);
     into_builder!(mailcarriers, mailcarriers::Builder);
     into_builder!(mapchests, mapchests::Builder);
     into_builder!(masteries, masteries::Builder);

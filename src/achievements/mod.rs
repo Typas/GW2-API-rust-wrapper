@@ -20,7 +20,7 @@ pub struct Builder {
 }
 
 impl Builder {
-    pub async fn build(self) -> ApiResult<Data> {
+    pub async fn get(self) -> ApiResult<Data> {
         let req = request_common_build(&self.client, &self.key, &self.version, &self.url);
 
         let data = req.send().await?.json().await?;
@@ -46,7 +46,7 @@ impl Builder {
             client: self.client,
             key: self.key,
             version: self.version,
-            url: self.url + "?ids=",
+            url: self.url,
             ids,
         }
     }
@@ -75,7 +75,7 @@ pub struct IdBuilder {
 }
 
 impl IdBuilder {
-    pub async fn build(self) -> ApiResult<IdData> {
+    pub async fn get(self) -> ApiResult<IdData> {
         todo!()
     }
 }
@@ -89,7 +89,7 @@ pub struct MultiIdBuilder {
 }
 
 impl MultiIdBuilder {
-    pub async fn build(self) -> ApiResult<Vec<IdData>> {
+    pub async fn get(self) -> ApiResult<Vec<IdData>> {
         todo!()
     }
 }

@@ -62,6 +62,174 @@ impl ApiClient {
     pub fn guild(&self) -> crate::guild::Builder {
         self.into()
     }
+
+    pub fn home(&self) -> crate::home::Builder {
+        self.into()
+    }
+
+    pub fn mounts(&self) -> crate::mounts::Builder {
+        self.into()
+    }
+
+    pub fn pvp(&self) -> crate::pvp::Builder {
+        self.into()
+    }
+
+    // pub fn recipes(&self) -> crate::recipes::Builder {
+    //     self.into()
+    // }
+
+    // pub fn stories(&self) -> crate::stories::Builder {
+    //     self.into()
+    // }
+
+    // pub fn wvw(&self) -> crate::wvw::Builder {
+    //     self.into()
+    // }
+
+    // pub fn build(&self) -> crate::build::Builder {
+    //     self.into()
+    // }
+
+    // pub fn characters(&self) -> crate::characters::Builder {
+    //     self.into()
+    // }
+
+    // pub fn colors(&self) -> crate::colors::Builder {
+    //     self.into()
+    // }
+
+    // pub fn continents(&self) -> crate::continents::Builder {
+    //     self.into()
+    // }
+
+    // pub fn createsubtoken(&self) -> crate::createsubtoken::Builder {
+    //     self.into()
+    // }
+
+    // pub fn currencies(&self) -> crate::currencies::Builder {
+    //     self.into()
+    // }
+
+    // pub fn dailycrafting(&self) -> crate::dailycrafting::Builder {
+    //     self.into()
+    // }
+
+    // pub fn dungeons(&self) -> crate::dungeons::Builder {
+    //     self.into()
+    // }
+
+    // pub fn emblem(&self) -> crate::emblem::Builder {
+    //     self.into()
+    // }
+
+    // pub fn files(&self) -> crate::files::Builder {
+    //     self.into()
+    // }
+
+    // pub fn finishers(&self) -> crate::finishers::Builder {
+    //     self.into()
+    // }
+
+    // pub fn items(&self) -> crate::items::Builder {
+    //     self.into()
+    // }
+
+    // pub fn itemstats(&self) -> crate::itemstats::Builder {
+    //     self.into()
+    // }
+
+    // pub fn length(&self) -> crate::legends::Builder {
+    //     self.into()
+    // }
+
+    // pub fn mapchests(&self) -> crate::mapchests::Builder {
+    //     self.into()
+    // }
+
+    // pub fn maps(&self) -> crate::maps::Builder {
+    //     self.into()
+    // }
+
+    // pub fn legendaryarmory(&self) -> crate::legendaryarmory::Builder {
+    //     self.into()
+    // }
+
+    // pub fn masteries(&self) -> crate::masteries::Builder {
+    //     self.into()
+    // }
+
+    // pub fn materials(&self) -> crate::materials::Builder {
+    //     self.into()
+    // }
+
+    // pub fn minis(&self) -> crate::minis::Builder {
+    //     self.into()
+    // }
+
+    // pub fn novelties(&self) -> crate::novelties::Builder {
+    //     self.into()
+    // }
+
+    // pub fn outfits(&self) -> crate::outfits::Builder {
+    //     self.into()
+    // }
+
+    // pub fn pets(&self) -> crate::pets::Builder {
+    //     self.into()
+    // }
+
+    // pub fn professions(&self) -> crate::professions::Builder {
+    //     self.into()
+    // }
+
+    // pub fn quaggans(&self) -> crate::quaggans::Builder {
+    //     self.into()
+    // }
+
+    // pub fn quests(&self) -> crate::quests::Builder {
+    //     self.into()
+    // }
+
+    // pub fn races(&self) -> crate::races::Builder {
+    //     self.into()
+    // }
+
+    // pub fn raids(&self) -> crate::raids::Builder {
+    //     self.into()
+    // }
+
+    // pub fn skills(&self) -> crate::skills::Builder {
+    //     self.into()
+    // }
+
+    // pub fn skins(&self) -> crate::skins::Builder {
+    //     self.into()
+    // }
+
+    // pub fn specializations(&self) -> crate::specializations::Builder {
+    //     self.into()
+    // }
+
+    // pub fn titles(&self) -> crate::titles::Builder {
+    //     self.into()
+    // }
+
+    // pub fn tokeninfo(&self) -> crate::tokeninfo::Builder {
+    //     self.into()
+    // }
+
+    // pub fn traits(&self) -> crate::traits::Builder {
+    //     self.into()
+    // }
+
+    // pub fn worldbosses(&self) -> crate::worldbosses::Builder {
+    //     self.into()
+    // }
+
+    // pub fn worlds(&self) -> crate::worlds::Builder {
+    //     self.into()
+    // }
 }
 
 impl ApiClientBuilder {
@@ -120,6 +288,29 @@ pub struct NotAuthenticatedError;
 impl fmt::Display for NotAuthenticatedError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "API key is invalid, or void")
+    }
+}
+
+#[derive(Clone, Copy)]
+pub enum Language {
+    English,
+    Spanish,
+    German,
+    French,
+    Chinese,
+}
+
+impl fmt::Display for Language {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let s = match self {
+            &Self::English => "en",
+            &Self::Spanish => "es",
+            &Self::German => "de",
+            &Self::French => "fr",
+            &Self::Chinese => "zh",
+        };
+
+        write!(f, "{}", s)
     }
 }
 

@@ -19,7 +19,7 @@ pub struct Builder {
 }
 
 impl Builder {
-    pub async fn build(self) -> ApiResult<Data> {
+    pub async fn get(self) -> ApiResult<Data> {
         todo!()
     }
 
@@ -52,7 +52,7 @@ pub struct CurrentBuilder {
 }
 
 impl CurrentBuilder {
-    pub async fn build(self) -> ApiResult<CurrentData> {
+    pub async fn get(self) -> ApiResult<CurrentData> {
         todo!()
     }
 
@@ -85,7 +85,7 @@ pub struct HistoryBuilder {
 }
 
 impl HistoryBuilder {
-    pub async fn build(self) -> ApiResult<HistoryData> {
+    pub async fn get(self) -> ApiResult<HistoryData> {
         todo!()
     }
 
@@ -117,7 +117,7 @@ pub struct CurrentBuysBuilder {
 }
 
 impl CurrentBuysBuilder {
-    pub async fn build(self) -> ApiResult<CurrentBuysData> {
+    pub async fn get(self) -> ApiResult<CurrentBuysData> {
         todo!()
     }
 }
@@ -144,7 +144,7 @@ pub struct CurrentSellsBuilder {
 }
 
 impl CurrentSellsBuilder {
-    pub async fn build(self) -> ApiResult<CurrentSellsData> {
+    pub async fn get(self) -> ApiResult<CurrentSellsData> {
         todo!()
     }
 }
@@ -173,7 +173,7 @@ pub struct HistoryBuysBuilder {
 }
 
 impl HistoryBuysBuilder {
-    pub async fn build(self) -> ApiResult<HistoryBuysData> {
+    pub async fn get(self) -> ApiResult<HistoryBuysData> {
         todo!()
     }
 }
@@ -200,7 +200,7 @@ pub struct HistorySellsBuilder {
 }
 
 impl HistorySellsBuilder {
-    pub async fn build(self) -> ApiResult<HistorySellsData> {
+    pub async fn get(self) -> ApiResult<HistorySellsData> {
         todo!()
     }
 }

@@ -17,7 +17,7 @@ pub struct Builder {
 }
 
 impl Builder {
-    pub async fn build(self) -> ApiResult<Data> {
+    pub async fn get(self) -> ApiResult<Data> {
         self.build_with_quantity(400).await
     }
 

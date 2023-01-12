@@ -18,17 +18,17 @@ pub struct Builder {
 }
 
 impl Builder {
-    pub async fn build(self) -> ApiResult<Data> {
+    pub async fn get(self) -> ApiResult<Data> {
         todo!()
     }
 
-    pub fn id(self, sid: String) -> IdBuilder {
+    pub fn id(self, sid: &str) -> IdBuilder {
         IdBuilder {
             client: self.client,
             key: self.key,
             version: self.version,
             url: self.url + "/",
-            sid,
+            sid: sid.to_string(),
         }
     }
 
@@ -37,7 +37,7 @@ impl Builder {
             client: self.client,
             key: self.key,
             version: self.version,
-            url: self.url + "?ids=",
+            url: self.url,
             sids,
         }
     }
@@ -66,7 +66,7 @@ pub struct IdBuilder {
 }
 
 impl IdBuilder {
-    pub async fn build(self) -> ApiResult<IdData> {
+    pub async fn get(self) -> ApiResult<IdData> {
         todo!()
     }
 }
@@ -80,7 +80,7 @@ pub struct MultiIdBuilder {
 }
 
 impl MultiIdBuilder {
-    pub async fn build(self) -> ApiResult<IdData> {
+    pub async fn get(self) -> ApiResult<IdData> {
         todo!()
     }
 }

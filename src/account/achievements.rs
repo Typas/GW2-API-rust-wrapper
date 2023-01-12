@@ -95,7 +95,7 @@ pub struct Builder {
 
 impl Builder {
 
-    pub async fn build(self) -> ApiResult<Data> {
+    pub async fn get(self) -> ApiResult<Data> {
         if let None = Option::as_ref(&self.key) {
             return Err(Box::new(NotAuthenticatedError));
         }

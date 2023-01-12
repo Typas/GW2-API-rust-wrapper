@@ -47,7 +47,7 @@ pub struct NameBuilder {
 }
 
 impl NameBuilder {
-    pub async fn build(self) -> ApiResult<NameData> {
+    pub async fn get(self) -> ApiResult<NameData> {
         todo!()
     }
 }
