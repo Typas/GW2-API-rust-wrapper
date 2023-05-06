@@ -14,15 +14,19 @@ pub struct Builder {
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
     url: String,
+    quantity: Option<u32>,
 }
 
 impl Builder {
     pub async fn get(self) -> ApiResult<Data> {
-        self.build_with_quantity(400).await
+        todo!()
     }
 
-    pub async fn build_with_quantity(self, _quantity: u32) -> ApiResult<Data> {
-        todo!()
+    pub fn quantity(self, quantity: u32) -> Self {
+        Self {
+            quantity: Some(quantity),
+            ..self
+        }
     }
 }
 
@@ -33,6 +37,7 @@ impl From<super::Builder> for Builder {
             key: source.key,
             version: source.version,
             url: source.url + "/gems",
+            quantity: None,
         }
     }
 }

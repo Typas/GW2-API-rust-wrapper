@@ -4,6 +4,7 @@ use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
+// TODO: rename it
 pub enum Data {
     Pre20190516(DataPre20190516Schema),
     Post20190516(DataPost20190516Schema),

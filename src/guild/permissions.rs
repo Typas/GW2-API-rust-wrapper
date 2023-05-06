@@ -1,4 +1,4 @@
-use crate::util::*;
+use crate::{util::*, Language};
 use crate::{ApiResult, SchemaVersion};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
@@ -22,16 +22,6 @@ impl Builder {
         todo!()
     }
 
-    pub fn id(self, sid: &str) -> IdBuilder {
-        IdBuilder {
-            client: self.client,
-            key: self.key,
-            version: self.version,
-            url: self.url + "/",
-            sid: sid.to_string(),
-        }
-    }
-
     pub fn ids(self, sids: Vec<String>) -> MultiIdBuilder {
         MultiIdBuilder {
             client: self.client,
@@ -39,6 +29,7 @@ impl Builder {
             version: self.version,
             url: self.url,
             sids,
+            lang: None,
         }
     }
 }
@@ -59,26 +50,13 @@ pub struct IdData {}
 
 impl IdData {}
 
-pub struct IdBuilder {
-    client: Client,
-    key: Arc<Option<String>>,
-    version: Arc<SchemaVersion>,
-    url: String,
-    sid: String,
-}
-
-impl IdBuilder {
-    pub async fn get(self) -> ApiResult<IdData> {
-        todo!()
-    }
-}
-
 pub struct MultiIdBuilder {
     client: Client,
     key: Arc<Option<String>>,
     version: Arc<SchemaVersion>,
     url: String,
     sids: Vec<String>,
+    lang: Option<Language>,
 }
 
 impl MultiIdBuilder {
